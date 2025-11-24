@@ -29,10 +29,9 @@ public class CameraFollow : MonoBehaviour
     {
         timeSinceStart += Time.deltaTime;
 
-        // 1. מעדכנים גלילה אוטומטית
+        // 1. גלילה אוטומטית כלפי מעלה
         if (enableAutoScroll && timeSinceStart >= startScrollDelay)
         {
-            // האצה הדרגתית מ-initialScrollSpeed עד maxScrollSpeed
             if (currentScrollSpeed < initialScrollSpeed)
             {
                 currentScrollSpeed = initialScrollSpeed;
@@ -48,13 +47,12 @@ public class CameraFollow : MonoBehaviour
         }
 
         // 2. מחשבים את הגובה הרצוי של המצלמה
-
         float desiredY = scrollY;
 
         if (target != null)
         {
-            // המצלמה אף פעם לא תרד מתחת scrollY,
-            // אבל אם השחקן מעל – היא תעלה אחריו
+            // המצלמה לא תרד מתחת לבייסליין של הגלילה,
+            // אבל אם השחקן גבוה יותר – נעלה אל השחקן
             desiredY = Mathf.Max(scrollY, target.position.y);
         }
 
@@ -64,10 +62,26 @@ public class CameraFollow : MonoBehaviour
             transform.position.z
         );
 
-        transform.position = Vector3.Lerp(
+        // 3. smoothing לתנועה חלקה
+        Vector3 smoothed = Vector3.Lerp(
             transform.position,
             desiredPos,
             smoothSpeed * Time.deltaTime
         );
+
+        // 4. לא נותנים למצלמה לרדת אף פעם
+        if (smoothed.y < transform.position.y)
+        {
+            smoothed.y = transform.position.y;
+        }
+
+        // 5. מזיזים את המצלמה למיקום הסופי
+        transform.position = smoothed;
+
+        // 6. מעדכנים את scrollY כדי שתמיד ישקף את הגובה המקסימלי של המצלמה
+        //    כלומר – אם השחקן גרם למצלמה לעלות יותר גבוה,
+        //    הבייסליין של הגלילה האוטומטית "מדלג" לגובה החדש
+        scrollY = Mathf.Max(scrollY, transform.position.y);
     }
+
 }
