@@ -42,8 +42,10 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // תנועה אופקית חלקה
+        if (Mathf.Abs(moveInput) > 0.01f)
+    {
         rb.linearVelocity = new Vector2(moveInput * moveSpeed, rb.linearVelocity.y);
+    }
     }
 
     void OnDrawGizmosSelected()

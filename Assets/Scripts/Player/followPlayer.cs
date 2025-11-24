@@ -1,13 +1,36 @@
 using UnityEngine;
 
-public class followPlayer : MonoBehaviour
+public class CameraFollow : MonoBehaviour
 {
-    [SerializeField] Transform player;
-    [SerializeField] Vector3 offset = new Vector3(0f, 0f, -10f);
+    public Transform target;          // השחקן
+    public float smoothSpeed = 3f;
+    private float highestY;
+
+    void Start()
+    {
+        highestY = transform.position.y-10;
+    }
 
     void LateUpdate()
     {
-        if (player == null) return;
-        transform.position = player.position + offset;
+        if (target == null) return;
+
+        // אם השחקן גבוה יותר מהמצלמה – עולים למעלה
+        if (target.position.y > highestY)
+        {
+            highestY = target.position.y;
+
+            Vector3 desiredPos = new Vector3(
+                transform.position.x,
+                highestY,
+                transform.position.z
+            );
+
+            transform.position = Vector3.Lerp(
+                transform.position,
+                desiredPos,
+                smoothSpeed * Time.deltaTime
+            );
+        }
     }
 }
