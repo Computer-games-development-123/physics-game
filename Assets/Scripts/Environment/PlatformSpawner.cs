@@ -3,11 +3,11 @@ using UnityEngine;
 public class PlatformSpawner : MonoBehaviour
 {
     [Header("References")]
-    public GameObject platformPrefab;              // פלטפורמה רגילה
-    public GameObject collapsingPlatformPrefab;    // פלטפורמה קורסה
-    public GameObject windZoneObject;              // אובייקט רוח בסצנה (ילד של המצלמה)
-    public Transform player;                       // השחקן
-    public Transform platformsParent;              // הורה לכל הפלטפורמות (לא חובה)
+    public GameObject platformPrefab;
+    public GameObject collapsingPlatformPrefab;
+    public GameObject windZoneObject;
+    public Transform player;
+    public Transform platformsParent;
 
     [Header("Spawn Settings")]
     public float startY = -3f;
@@ -20,30 +20,27 @@ public class PlatformSpawner : MonoBehaviour
 
     [Header("Special Platforms")]
     [Range(0f, 1f)]
-    public float specialPlatformChance = 0.2f;     // הסתברות בסיסית לפלטפורמה מיוחדת (קורסה)
-    public int minNormalAfterSpecial = 20;         // כמה פלטפורמות רגילות לפחות אחרי מיוחדת
+    public float specialPlatformChance = 0.2f;
+    public int minNormalAfterSpecial = 20;
 
-    private int normalSinceLastSpecial = 100;      // מונה פלטפורמות רגילות מאז המיוחדת האחרונה
+    private int normalSinceLastSpecial = 100;
     private float highestY;
 
     [Header("Difficulty Levels")]
-    public int platformsSpawned = 0;               // כמה פלטפורמות יצרנו עד עכשיו
-    public int level = 1;                          // דרגת קושי נוכחית
-
-    public int level2Threshold = 50;               // אחרי כמה פלטפורמות עוברים לשלב 2
-    public int level3Threshold = 100;              // אחרי כמה פלטפורמות עוברים לשלב 3
+    public int platformsSpawned = 0;
+    public int level = 1;
+    public int level2Threshold = 50;
+    public int level3Threshold = 100;
 
     void Start()
     {
         highestY = startY;
 
-        // יצירה התחלתית של פלטפורמות
         for (int i = 0; i < initialPlatforms; i++)
         {
             SpawnPlatform();
         }
 
-        // לוודא ש-WindZone כבוי בתחילת המשחק (אם לא כיבית ידנית)
         if (windZoneObject != null)
         {
             windZoneObject.SetActive(false);
@@ -54,7 +51,6 @@ public class PlatformSpawner : MonoBehaviour
     {
         if (player == null) return;
 
-        // כל עוד אין מספיק פלטפורמות מעל השחקן – נוסיף חדשות
         while (highestY < player.position.y + distanceAhead)
         {
             SpawnPlatform();
@@ -105,7 +101,6 @@ public class PlatformSpawner : MonoBehaviour
             level = 1;
         }
 
-        // אם הרגע עלינו לשלב 3 – מפעילים את איזור הרוח פעם אחת
         if (previousLevel != level && level == 3 && windZoneObject != null)
         {
             windZoneObject.SetActive(true);
@@ -115,23 +110,15 @@ public class PlatformSpawner : MonoBehaviour
 
     GameObject ChoosePlatform(Vector3 spawnPos)
     {
-        // ברירת מחדל – פלטפורמה רגילה
         GameObject prefabToSpawn = platformPrefab;
 
-        // -------------------------
-        // שלב 1 – רק פלטפורמות רגילות
-        // -------------------------
         if (level == 1)
         {
             return platformPrefab;
         }
 
-        // -------------------------
-        // שלב 2 ומעלה – מוסיפים פלטפורמות קורסות לפי הסתברות
-        // -------------------------
         if (level >= 2 && collapsingPlatformPrefab != null)
         {
-            // לוודא שיש לפחות X פלטפורמות רגילות בין מיוחדות
             if (normalSinceLastSpecial >= minNormalAfterSpecial)
             {
                 if (Random.value < specialPlatformChance)
@@ -143,8 +130,6 @@ public class PlatformSpawner : MonoBehaviour
 
             normalSinceLastSpecial++;
         }
-
-        // אם לא יצרנו מיוחדת – יוצרת רגילה
         return prefabToSpawn;
     }
 }

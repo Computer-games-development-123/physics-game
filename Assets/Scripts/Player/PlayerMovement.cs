@@ -3,8 +3,8 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
-    public float maxMoveSpeed = 8f;       // מהירות מקסימלית
-    public float moveAcceleration = 20f;  // קצב האצה
+    public float maxMoveSpeed = 8f;
+    public float moveAcceleration = 20f;
     public float jumpForce = 16f;
 
     [Header("Momentum Jump Settings")]
@@ -27,35 +27,26 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        // קלט צדדי (חץ ימין/שמאל או A/D)
         moveInput = Input.GetAxisRaw("Horizontal");
 
-        // בדיקת קרקע
         isGrounded = Physics2D.OverlapCircle(
             groundCheck.position,
             groundCheckRadius,
             groundLayer
         );
 
-        // קפיצה – רק אם על הקרקע
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            // מהירות אופקית נוכחית (תנופה)
             float horizontalSpeed = Mathf.Abs(rb.linearVelocity.x);
 
-            // ננרמל את המהירות לטווח [0,1] לפי maxSpeedForBonus
             float t = Mathf.InverseLerp(0f, maxSpeedForBonus, horizontalSpeed);
 
-            // מחשבים בונוס קפיצה
             float bonus = t * extraJumpForce;
 
-            // כוח קפיצה סופי
             float finalJumpForce = jumpForce + bonus;
 
-            // מאפסים מהירות Y כדי שהקפיצה תהיה נקייה
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0f);
 
-            // מוסיפים כוח קפיצה עם הבונוס
             rb.AddForce(Vector2.up * finalJumpForce, ForceMode2D.Impulse);
         }
     }
@@ -77,7 +68,6 @@ public class PlayerMovement : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        // סתם כדי לראות את רדיוס הקרקע בסצנה
         if (groundCheck != null)
         {
             Gizmos.color = Color.yellow;
