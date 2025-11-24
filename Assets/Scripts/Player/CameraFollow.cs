@@ -69,7 +69,7 @@ public class CameraFollow : MonoBehaviour
         }
 
         transform.position = smoothed;
-        
+
         scrollY = Mathf.Max(scrollY, transform.position.y);
     }
 

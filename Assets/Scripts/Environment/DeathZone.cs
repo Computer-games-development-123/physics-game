@@ -33,25 +33,25 @@ public class DeathZone : MonoBehaviour
     }
 
     void HandlePlayerDeath(GameObject player)
-{
-    isGameOver = true;
-
-    if (playerMovement == null)
-        playerMovement = player.GetComponent<PlayerMovement>();
-
-    if (playerMovement != null)
-        playerMovement.enabled = false;
-
-    Time.timeScale = 0f;
-
-    if (gameOverPanel != null)
-        gameOverPanel.SetActive(true);
-
-    if (scoreManager != null && finalScoreText != null)
     {
-        finalScoreText.text = "Final Score: " + scoreManager.CurrentScore;
+        isGameOver = true;
+
+        if (playerMovement == null)
+            playerMovement = player.GetComponent<PlayerMovement>();
+
+        if (playerMovement != null)
+            playerMovement.enabled = false;
+
+        Time.timeScale = 0f;
+
+        if (gameOverPanel != null)
+            gameOverPanel.SetActive(true);
+
+        if (scoreManager != null && finalScoreText != null)
+        {
+            finalScoreText.text = "Final Score: " + scoreManager.CurrentScore;
+        }
     }
-}
 
 
     public void RestartLevel()
