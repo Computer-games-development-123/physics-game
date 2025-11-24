@@ -21,9 +21,9 @@ public class PlatformSpawner : MonoBehaviour
     [Header("Special Platforms")]
     [Range(0f, 1f)]
     public float specialPlatformChance = 0.2f;
-    public int minNormalAfterSpecial = 20;
+    public int minNormalAfterSpecial = 10;
 
-    private int normalSinceLastSpecial = 100;
+    private int normalSinceLastSpecial = 50;
     private float highestY;
 
     [Header("Difficulty Levels")]
